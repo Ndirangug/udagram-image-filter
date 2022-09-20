@@ -36,12 +36,12 @@ import { filterImageFromURL, deleteLocalFiles } from './util/util';
     try {
       const test_url = new URL(image_url);
     } catch (e) {
-      return res.status(400).send({ message: 'image_url has to be a valid http url' });
+      return res.status(422).send({ message: 'image_url has to be a valid http url' });
     }
 
     filterImageFromURL(image_url).then((filteredpath) => {
       console.log("filteredpath: " + filteredpath);
-      res.sendFile(filteredpath, (err) => {
+      res.status(200).sendFile(filteredpath, (err) => {
         if (err) {
           console.error(err);
         }
