@@ -29,28 +29,31 @@ import { filterImageFromURL, deleteLocalFiles } from './util/util';
 
   /**************************************************************************** */
   app.get("/filteredimage", async (req, res) => {
-
-    let { image_url }: { image_url: string } = req.query;
-
-    //validate image url
     try {
+      let { image_url }: { image_url: string } = req.query;
+
+      //validate image url
       const test_url = new URL(image_url);
+
+
+      filterImageFromURL(image_url).then((filteredpath) => {
+        console.log("filteredpath: " + filteredpath);
+        res.status(200).sendFile(filteredpath, (err) => {
+          if (err) {
+            console.error("error after sendfile", err);
+          }
+
+          deleteLocalFiles([filteredpath]);
+        });
+
+      })
     } catch (e) {
-      return res.status(422).send({ message: 'image_url has to be a valid http url' });
+      if (e instanceof TypeError) {
+        return res.status(422).send({ message: 'image_url has to be a valid http url' });
+      }
+
+      return res.status(500).send({ error: e.constructor, message: 'Internal Server Error.' + e.toString() });
     }
-
-    filterImageFromURL(image_url).then((filteredpath) => {
-      console.log("filteredpath: " + filteredpath);
-      res.status(200).sendFile(filteredpath, (err) => {
-        if (err) {
-          console.error(err);
-        }
-
-        deleteLocalFiles([filteredpath]);
-      });
-
-    })
-
   });
   //! END @TODO1
 
