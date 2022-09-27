@@ -33,23 +33,11 @@ import { filterImageFromURL, deleteLocalFiles } from './util/util';
       let { image_url }: { image_url: string } = req.query;
 
       //validate image url
-      const test_url = new URL(image_url);
+      const test_url: URL = new URL(image_url);
 
-
-      // filterImageFromURL(image_url).then((filteredpath) => {
-      //   console.log("filteredpath: " + filteredpath);
-      //   res.status(200).sendFile(filteredpath, (err) => {
-      //     if (err) {
-      //       console.error("error after sendfile", err);
-      //     }
-
-      //     deleteLocalFiles([filteredpath]);
-      //   });
-
-      // })
-      const filteredPath = await filterImageFromURL(image_url);
+      const filteredPath: string = await filterImageFromURL(image_url);
       console.log("filteredpath: " + filteredPath);
-      res.status(200).sendFile(filteredPath, (err) => {
+      res.status(200).sendFile(filteredPath, (err: Error) => {
         if (err) {
           console.error("error after sendfile", err);
         }
